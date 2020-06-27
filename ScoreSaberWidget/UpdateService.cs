@@ -47,10 +47,13 @@ namespace ScoreSaberWidget
         private RemoteViews GetViews(Context context)
         {
             ulong profileId = 76561198126780301;
+            Console.WriteLine("Getting profile for id: " + profileId);
             var task = api.GetUserData(profileId).ConfigureAwait(true);
             var userInfo = task.GetAwaiter().GetResult();
 
             var views = new RemoteViews(context.PackageName, Resource.Layout.widget_data);
+
+            Console.WriteLine($"Username: {userInfo.Username} Rank: {userInfo.GlobalRank}");
 
             views.SetTextViewText(Resource.Id.username, userInfo.Username);
             views.SetTextViewText(Resource.Id.rank, userInfo.GlobalRank.ToString());
