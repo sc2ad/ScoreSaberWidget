@@ -31,6 +31,14 @@
         android:layout_toRightOf="@id/username"
         android:clickable="true"
         android:text="@string/refresh"
-        android:paddingTop="5px"
+        android:paddingTop="5dp"
+        android:layout_marginTop="10.0dp" />
+    <Button
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/edit"
+        android:layout_toRightOf="@id/refresh"
+        android:paddingTop="5dp"
         android:layout_marginTop="10.0dp" />
 </RelativeLayout>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -11,6 +12,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Newtonsoft.Json;
 
 namespace ScoreSaberWidget
 {
@@ -21,8 +23,22 @@ namespace ScoreSaberWidget
     {
         // milliseconds before rescheduling job (at least this long between automatic updates)
         public const long Interval = 3600000;
+
+        private static PersistentData data;
+
+        public static long GetUserId() => data.UserId;
+
+        public static void SetUserId(Context context, long userId)
+        {
+            data.UserId = userId;
+            data.Save(context);
+            ScheduleUpdateNow(context);
+        }
+
         public override void OnUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
         {
+            // Default to use taichi's ID :)
+            data = PersistentData.Load(context) ?? new PersistentData(2429129807113296L);
             Console.WriteLine("Updating ScoreSaber Widget!");
             ScheduleUpdateNow(context);
         }
@@ -32,7 +48,8 @@ namespace ScoreSaberWidget
             var jobScheduler = context.GetSystemService(Java.Lang.Class.FromType(typeof(JobScheduler))) as JobScheduler;
             jobScheduler.CancelAll();
             var parameters = new PersistableBundle();
-            parameters.PutLong("UserID", 76561198126780301L);
+            parameters.PutLong("UserID", data.UserId);
+            Console.WriteLine("UserID: " + data.UserId);
             var jobBuilder = new JobInfo.Builder(1, new ComponentName(context, Java.Lang.Class.FromType(typeof(UpdateService))));
             jobBuilder.SetPeriodic(Interval);
             var jobInfo = jobBuilder.SetExtras(parameters).Build();

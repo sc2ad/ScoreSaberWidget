@@ -4,4 +4,8 @@
   <string name="widget_name">ScoreSaber Widget</string>
   <string name="widget_loading">Loading profile...</string>
   <string name="refresh">Refresh</string>
+  <string name="config_userId">Enter your ScoreSaber UserID: </string>
+  <string name="config_save">Save</string>
+  <string name="config_cancel">Cancel</string>
+  <string name="edit">Edit</string>
 </resources>

@@ -54,8 +54,11 @@ namespace ScoreSaberWidget
             //var pending = PendingIntent.GetActivity(context, 0, actionIntent, 0);
             //views.SetOnClickPendingIntent(Resource.Id.widget, pending);
             var intent = new Intent(context, Java.Lang.Class.FromType(typeof(RefreshActivity)));
+            var editIntent = new Intent(context, Java.Lang.Class.FromType(typeof(ConfigurationActivity)));
             var refreshPending = PendingIntent.GetActivity(context, 0, intent, 0);
+            var editPending = PendingIntent.GetActivity(context, 0, editIntent, 0);
             views.SetOnClickPendingIntent(Resource.Id.refresh, refreshPending);
+            views.SetOnClickPendingIntent(Resource.Id.edit, editPending);
             Console.WriteLine("Created RemoveViews!");
             return views;
         }

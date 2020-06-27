@@ -1,0 +1,36 @@
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:id="@+id/config_save">
+    <TextView
+        android:id="@+id/config_label_userId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/config_userId" />
+    <TextView
+        android:id="@+id/config_oldUserId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/config_userId"
+        android:layout_width="195.0dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_marginRight="34.0dp" />
+    <Button
+        android:id="@+id/config_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/config_cancel"/>
+    <Button
+        android:id="@+id/config_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/config_save"
+        android:layout_toRightOf="@id/config_cancel"/>
+</LinearLayout>
