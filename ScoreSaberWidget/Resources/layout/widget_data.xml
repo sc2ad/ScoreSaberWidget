@@ -24,4 +24,13 @@
         android:includeFontPadding="false"
         android:singleLine="true"
         style="@style/Rank" />
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/username"
+        android:clickable="true"
+        android:text="@string/refresh"
+        android:paddingTop="5px"
+        android:layout_marginTop="10.0dp" />
 </RelativeLayout>

@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">ScoreSaber Widget</string>
-    <string name="action_settings">Settings</string>
-    <string name="widget_name">ScoreSaber Widget</string>
-    <string name="widget_loading">Loading profile...</string>
+  <string name="app_name">ScoreSaber Widget</string>
+  <string name="action_settings">Settings</string>
+  <string name="widget_name">ScoreSaber Widget</string>
+  <string name="widget_loading">Loading profile...</string>
+  <string name="refresh">Refresh</string>
 </resources>

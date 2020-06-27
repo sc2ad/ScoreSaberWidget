@@ -21,9 +21,12 @@ namespace ScoreSaber
         public async Task<UserInfo> GetUserData(ulong userProfile)
         {
             var uri = new Uri(GetProfileUrl(userProfile));
+            Console.WriteLine("GetUserData, uri: " + uri);
             var response = await client.GetAsync(uri);
+            Console.WriteLine("Response: " + response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
+                Console.WriteLine("UserData obtained!");
                 var s = await response.Content.ReadAsStringAsync();
                 return new UserInfo(s);
             }

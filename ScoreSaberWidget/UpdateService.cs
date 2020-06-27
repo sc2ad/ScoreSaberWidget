@@ -4,12 +4,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
+using Android.App.Job;
 using Android.Appwidget;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V4.App;
 using Android.Views;
 using Android.Widget;
 
@@ -17,51 +19,61 @@ using ScoreSaber;
 
 namespace ScoreSaberWidget
 {
-    [Service]
-    public class UpdateService : Service
+    [Service(Name = "com.sc2ad.ScoreSaberWidget.UpdateJob", Permission = "android.permission.BIND_JOB_SERVICE")]
+    public class UpdateService : JobService
     {
         private ScoreSaberAPI api;
-        public override void OnCreate()
-        {
-            var client = new HttpClient();
-            api = new ScoreSaberAPI(client);
-            base.OnCreate();
-        }
-        public override IBinder OnBind(Intent intent)
-        {
-            // Unnecessary
-            return null;
-        }
 
-        [return: GeneratedEnum]
-        public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
+        private void CreateWidget(Context context, ulong val)
         {
-            var views = GetViews(this);
+            Console.WriteLine("Creating widget!");
+            var views = GetViews(context, val);
 
-            var widget = new ComponentName(this, Java.Lang.Class.FromType(typeof(ScoreSaberWidget)).Name);
-            var manager = AppWidgetManager.GetInstance(this);
+            var widget = new ComponentName(context, Java.Lang.Class.FromType(typeof(ScoreSaberWidget)).Name);
+            var manager = AppWidgetManager.GetInstance(context);
             manager.UpdateAppWidget(widget, views);
-            return base.OnStartCommand(intent, flags, startId);
+            Console.WriteLine("Created widget, should have set the AppWidgetManager to use the latest views!");
         }
 
-        private RemoteViews GetViews(Context context)
+        private RemoteViews GetViews(Context context, ulong profileId)
         {
-            ulong profileId = 76561198126780301;
             Console.WriteLine("Getting profile for id: " + profileId);
-            var task = api.GetUserData(profileId).ConfigureAwait(true);
+            var task = api.GetUserData(profileId);
             var userInfo = task.GetAwaiter().GetResult();
+
+            Console.WriteLine("Creating RemoteViews for username: " + userInfo.Username);
 
             var views = new RemoteViews(context.PackageName, Resource.Layout.widget_data);
 
             Console.WriteLine($"Username: {userInfo.Username} Rank: {userInfo.GlobalRank}");
 
             views.SetTextViewText(Resource.Id.username, userInfo.Username);
-            views.SetTextViewText(Resource.Id.rank, userInfo.GlobalRank.ToString());
+            views.SetTextViewText(Resource.Id.rank, "#" + userInfo.GlobalRank.ToString());
 
-            var actionIntent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(api.GetProfileUrl(profileId)));
-            var pending = PendingIntent.GetActivity(context, 0, actionIntent, 0);
-            views.SetOnClickPendingIntent(Resource.Id.widget, pending);
+            //var actionIntent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(api.GetProfileUrl(profileId)));
+            //var pending = PendingIntent.GetActivity(context, 0, actionIntent, 0);
+            //views.SetOnClickPendingIntent(Resource.Id.widget, pending);
+            var intent = new Intent(context, Java.Lang.Class.FromType(typeof(RefreshActivity)));
+            var refreshPending = PendingIntent.GetActivity(context, 0, intent, 0);
+            views.SetOnClickPendingIntent(Resource.Id.refresh, refreshPending);
+            Console.WriteLine("Created RemoveViews!");
             return views;
+        }
+
+        public override bool OnStartJob(JobParameters @params)
+        {
+            Console.WriteLine("UpdateService starting!");
+            var client = new HttpClient();
+            api = new ScoreSaberAPI(client);
+            ulong val = (ulong)@params.Extras.GetLong("UserID");
+            Task.Run(() => CreateWidget(this, val));
+            return true;
+        }
+
+        public override bool OnStopJob(JobParameters @params)
+        {
+            Console.WriteLine("UpdateService complete!");
+            return false;
         }
     }
 }
