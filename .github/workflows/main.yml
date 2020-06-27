@@ -39,3 +39,11 @@ jobs:
       - name: Build ScoreSaberWidget
         working-directory: ./ScoreSaberWidget
         run: msbuild -t:SignAndroidPackage -p:Configuration=Release
+        
+      - name: Rename APK
+        run: copy .\ScoreSaberWidget\bin\Release\com.sc2ad.ScoreSaberWidget-Signed.apk .\com.sc2ad.ScoreSaberWidget.apk
+      - name: Upload ScoreSaberWidget
+        uses: actions/upload-artifact@v1
+        with:
+          name: com.sc2ad.ScoreSaberWidget.apk
+          path: ./com.sc2ad.ScoreSaberWidget.apk
